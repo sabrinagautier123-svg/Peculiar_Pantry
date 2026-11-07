@@ -437,6 +437,22 @@ export default function App() {
           /* try again next visit */
         }
       }
+      // One-time: save the built-in meal-prep recipes (ids starting "mp") as your own shared
+      // recipes, so you can edit them and upload photos. Until this succeeds, the built-in
+      // copies are shown as a fallback.
+      if (!localStorage.getItem('ppp_seeded_mp')) {
+        let failed = false;
+        for (const r of INITIAL_RECIPES.filter((x) => x.id.startsWith('mp'))) {
+          const token = newToken();
+          try {
+            await apiFetch('POST', r, token);
+            saveToken(r.id, token);
+          } catch (err) {
+            if (!/already exists/i.test(err.message)) failed = true;
+          }
+        }
+        if (!failed) localStorage.setItem('ppp_seeded_mp', '1');
+      }
       refreshShared();
     })();
     const onFocus = () => document.visibilityState === 'visible' && refreshShared();
@@ -576,6 +592,7 @@ export default function App() {
     try {
       await apiFetch('DELETE', null, token, `?id=${encodeURIComponent(id)}`);
       setSharedRecipes((prev) => prev.filter((r) => r.id !== id));
+      if (INITIAL_RECIPES.some((r) => r.id === id)) setHiddenIds((prev) => [...prev, id]);
       showNotification('Recipe deleted from shared cookbook');
     } catch (err) {
       showNotification(`Could not delete: ${err.message}`);
@@ -647,7 +664,13 @@ export default function App() {
     e.preventDefault();
     if (!newRecipe.title.trim()) return;
 
-    const macros = estimateNutritionFromIngredients(newRecipe.ingredients);
+    const sig = (list) =>
+      JSON.stringify((list || []).map((i) => [i.name, String(i.amount), i.unit]));
+    const existing = editingRecipeId ? sharedRecipes.find((r) => r.id === editingRecipeId) : null;
+    const macros =
+      existing && existing.calories && sig(existing.ingredients) === sig(newRecipe.ingredients)
+        ? { calories: existing.calories, protein: existing.protein, carbs: existing.carbs, fat: existing.fat }
+        : estimateNutritionFromIngredients(newRecipe.ingredients);
     const tags = estimateTagsFromRecipe(newRecipe);
 
     const recipeId = editingRecipeId || `r${Date.now()}${Math.random().toString(36).slice(2, 6)}`;
@@ -1010,24 +1033,10 @@ export default function App() {
                                       <option value="">Select a dish...</option>
                                       {recipes.map((r) => (
                                         <option key={r.id} value={r.id}>
-                                          {r.title} ({r.calories} kcal)
+                                          {r.title}
                                         </option>
                                       ))}
                                     </select>
-
-                                    {dishItem.id && (
-                                      <div className="flex items-center gap-1 bg-white border border-slate-200 px-2 py-1.5 rounded-xl shadow-sm">
-                                        <span className="text-[10px] font-bold text-slate-400">Portions:</span>
-                                        <input
-                                          type="number"
-                                          min="1"
-                                          max="10"
-                                          value={portions}
-                                          onChange={(e) => handleMealSlotChange(day, meal, idx, 'portions', e.target.value)}
-                                          className="w-10 text-xs font-bold text-slate-800 focus:outline-none text-center bg-slate-50 rounded-md"
-                                        />
-                                      </div>
-                                    )}
 
                                     {assignedDishes.length > 1 && (
                                       <button
@@ -1047,10 +1056,24 @@ export default function App() {
                                         onClick={() => setLightboxImage(recipeMatch.image)}
                                         className="w-10 h-10 rounded-lg object-cover cursor-pointer hover:opacity-80 transition"
                                       />
-                                      <div className="flex-1 min-w-0">
-                                        <div className="flex items-center gap-2 text-[11px] font-bold text-slate-500">
+                                      <div className="flex-1 min-w-0 space-y-1">
+                                        <div className="text-[11px] font-bold text-slate-800 leading-tight break-words">
+                                          {recipeMatch.title}
+                                        </div>
+                                        <div className="flex flex-wrap items-center gap-x-2 text-[11px] font-bold text-slate-500">
                                           <span>🔥 {Math.round((recipeMatch.calories || 0) * ratio)} kcal</span>
                                           <span>💪 {Math.round((recipeMatch.protein || 0) * ratio)}g</span>
+                                        </div>
+                                        <div className="inline-flex items-center gap-1 bg-slate-50 border border-slate-200 px-1.5 py-0.5 rounded-lg">
+                                          <span className="text-[10px] font-bold text-slate-400">Portions:</span>
+                                          <input
+                                            type="number"
+                                            min="1"
+                                            max="10"
+                                            value={portions}
+                                            onChange={(e) => handleMealSlotChange(day, meal, idx, 'portions', e.target.value)}
+                                            className="w-9 text-xs font-bold text-slate-800 focus:outline-none text-center bg-white rounded-md"
+                                          />
                                         </div>
                                       </div>
                                       <button
