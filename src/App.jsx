@@ -1275,27 +1275,70 @@ export default function App() {
                 <p className="text-xs text-slate-400">Click "Sync Shopping List" above to import your weekly meal plan ingredients.</p>
               </div>
             ) : (
-              <div className="bg-white rounded-3xl border border-slate-200 p-6 space-y-3 shadow-sm">
-                {shoppingList.map((item) => (
+              (() => {
+                // Walk the shop in this order; any other aisle follows alphabetically, "Other" last
+                const AISLE_ORDER = ['Produce', 'Meat & Seafood', 'Dairy & Eggs', 'Bakery', 'Grains & Pasta', 'Pantry'];
+                const aisleOf = (i) => i.aisle || 'Other';
+                const rank = (a) => {
+                  const idx = AISLE_ORDER.indexOf(a);
+                  return idx !== -1 ? idx : a === 'Other' ? 999 : 100;
+                };
+                const byName = (a, b) => a.name.localeCompare(b.name);
+                const toggle = (id) =>
+                  setShoppingList((prev) => prev.map((i) => (i.id === id ? { ...i, checked: !i.checked } : i)));
+
+                const open = shoppingList.filter((i) => !i.checked);
+                const done = shoppingList
+                  .filter((i) => i.checked)
+                  .sort((a, b) => rank(aisleOf(a)) - rank(aisleOf(b)) || byName(a, b));
+                const groups = {};
+                open.forEach((i) => {
+                  (groups[aisleOf(i)] = groups[aisleOf(i)] || []).push(i);
+                });
+                const aisles = Object.keys(groups).sort((a, b) => rank(a) - rank(b) || a.localeCompare(b));
+
+                const row = (item) => (
                   <div
                     key={item.id}
-                    onClick={() => {
-                      setShoppingList(prev => prev.map(i => i.id === item.id ? { ...i, checked: !i.checked } : i));
-                    }}
+                    onClick={() => toggle(item.id)}
                     className={`flex items-center justify-between p-3.5 rounded-2xl border transition cursor-pointer ${
                       item.checked ? 'bg-slate-50 border-slate-100 text-slate-400 line-through' : 'bg-white border-slate-200 text-slate-800'
                     }`}
                   >
-                    <div className="flex items-center gap-3">
-                      {item.checked ? <CheckCircle className="w-5 h-5 text-emerald-500" /> : <Circle className="w-5 h-5 text-slate-300" />}
+                    <div className="flex items-center gap-3 min-w-0">
+                      {item.checked ? <CheckCircle className="w-5 h-5 text-emerald-500 shrink-0" /> : <Circle className="w-5 h-5 text-slate-300 shrink-0" />}
                       <span className="font-bold text-sm">{item.name}</span>
                     </div>
-                    <span className="text-xs font-bold px-2.5 py-1 bg-slate-100 rounded-lg text-slate-600">
+                    <span className="text-xs font-bold px-2.5 py-1 bg-slate-100 rounded-lg text-slate-600 shrink-0 ml-3">
                       {item.amount} {item.unit}
                     </span>
                   </div>
-                ))}
-              </div>
+                );
+
+                return (
+                  <div className="bg-white rounded-3xl border border-slate-200 p-6 space-y-6 shadow-sm">
+                    {aisles.map((aisle) => (
+                      <div key={aisle} className="space-y-2">
+                        <h3 className="text-xs font-black uppercase tracking-wider text-slate-400">
+                          {aisle} ({groups[aisle].length})
+                        </h3>
+                        {groups[aisle].sort(byName).map(row)}
+                      </div>
+                    ))}
+                    {open.length === 0 && (
+                      <p className="text-sm font-bold text-emerald-600 text-center">Everything's ticked off!</p>
+                    )}
+                    {done.length > 0 && (
+                      <div className="space-y-2">
+                        <h3 className="text-xs font-black uppercase tracking-wider text-slate-400">
+                          Ticked off ({done.length})
+                        </h3>
+                        {done.map(row)}
+                      </div>
+                    )}
+                  </div>
+                );
+              })()
             )}
           </div>
         )}
