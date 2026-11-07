@@ -79,7 +79,205 @@ const INITIAL_RECIPES = [
       'Top with mixed fresh berries and granola.',
       'Drizzle with honey before serving.'
     ]
+  },
+  {
+    id: 'mp1',
+    title: 'Grilled Chicken Burrito Bowls',
+    category: 'Lunch/Dinner',
+    prepTime: 40,
+    servings: 3,
+    calories: 930,
+    protein: 88,
+    carbs: 125,
+    fat: 14,
+    tags: ['Lunch/Dinner', 'High Protein', 'Meal Prep'],
+    image: 'https://images.unsplash.com/photo-1467003909585-2f8a72700288?w=600&auto=format&fit=crop&q=80',
+    ingredients: [
+      { name: 'Chicken Breast', amount: 300, unit: 'g', aisle: 'Meat & Seafood', image: '' },
+      { name: 'Brown Rice (dry)', amount: 0.5, unit: 'cup', aisle: 'Grains & Pasta', image: '' },
+      { name: 'Paprika', amount: 1, unit: 'tsp', aisle: 'Pantry', image: '' },
+      { name: 'Ground Cumin', amount: 0.5, unit: 'tsp', aisle: 'Pantry', image: '' },
+      { name: 'Garlic', amount: 1, unit: 'pc', aisle: 'Produce', image: '' },
+      { name: 'Zucchini', amount: 1, unit: 'pc', aisle: 'Produce', image: '' },
+      { name: 'Capsicum', amount: 1, unit: 'pc', aisle: 'Produce', image: '' },
+      { name: 'Corn Kernels', amount: 1, unit: 'cup', aisle: 'Produce', image: '' },
+      { name: 'Shredded Lettuce', amount: 1, unit: 'cup', aisle: 'Produce', image: '' },
+      { name: 'Salsa', amount: 0.25, unit: 'cup', aisle: 'Pantry', image: '' },
+      { name: 'Light Greek Yoghurt', amount: 0.25, unit: 'cup', aisle: 'Dairy & Eggs', image: '' }
+    ],
+    instructions: [
+      'Rinse the rice and simmer with 1 cup water, covered, for 30-35 minutes until tender. Rest 5 minutes, fluff, and spread on a tray to cool quickly.',
+      'Slice the chicken in half horizontally so it is evenly thin. Rub with paprika, cumin, crushed garlic, salt, pepper and a little oil spray.',
+      'Cook in a hot pan or grill pan for 5-6 minutes per side, until the centre reaches 75°C or the juices run clear. Rest 5 minutes, then slice.',
+      'Grill or pan-fry the sliced zucchini and capsicum on high for 3-4 minutes per side until lightly charred. Warm the corn in the same pan for 2 minutes.',
+      'Divide the rice, chicken, corn and grilled veg into 3 containers. Keep the lettuce, salsa and yoghurt in a separate small container.',
+      'To serve, reheat until steaming hot (about 2 minutes in the microwave), then add the fresh toppings. Keeps 3 days in the fridge.'
+    ]
+  },
+  {
+    id: 'mp2',
+    title: 'Beef Mince & Veg Bolognese',
+    category: 'Lunch/Dinner',
+    prepTime: 35,
+    servings: 3,
+    calories: 810,
+    protein: 82,
+    carbs: 105,
+    fat: 20,
+    tags: ['Lunch/Dinner', 'High Protein', 'Meal Prep', 'Freezer Friendly'],
+    image: 'https://images.unsplash.com/photo-1498837167922-ddd27525d352?w=600&auto=format&fit=crop&q=80',
+    ingredients: [
+      { name: 'Lean Beef Mince', amount: 300, unit: 'g', aisle: 'Meat & Seafood', image: '' },
+      { name: 'Onion', amount: 1, unit: 'pc', aisle: 'Produce', image: '' },
+      { name: 'Garlic', amount: 2, unit: 'pc', aisle: 'Produce', image: '' },
+      { name: 'Zucchini', amount: 1, unit: 'pc', aisle: 'Produce', image: '' },
+      { name: 'Carrot', amount: 1, unit: 'pc', aisle: 'Produce', image: '' },
+      { name: 'Crushed Tomatoes (can)', amount: 1, unit: 'pc', aisle: 'Pantry', image: '' },
+      { name: 'Dried Italian Herbs', amount: 1, unit: 'tsp', aisle: 'Pantry', image: '' },
+      { name: 'Lentil Pasta (dry)', amount: 60, unit: 'g', aisle: 'Grains & Pasta', image: '' },
+      { name: 'Green Beans or Cauliflower', amount: 200, unit: 'g', aisle: 'Produce', image: '' }
+    ],
+    instructions: [
+      'Heat a large pan over medium-high with a little oil spray. Fry the diced onion for 3 minutes, then add the garlic for 30 seconds.',
+      'Add the mince, break it up, and cook 5-6 minutes until browned.',
+      'Stir in the grated zucchini and carrot and cook for 3 minutes.',
+      'Add the crushed tomatoes, herbs, salt and pepper. Reduce the heat and simmer, partly covered, for 15-20 minutes, stirring occasionally.',
+      'Cook the lentil pasta per the packet (usually 7-9 minutes), drain, and measure 1/3 cup cooked per serve.',
+      'Steam the green beans or cauliflower for 4-5 minutes.',
+      'Divide the sauce, pasta and veg into 3 containers. Cool before sealing and refrigerating. Keeps 3 days, or freeze up to 3 months.'
+    ]
+  },
+  {
+    id: 'mp3',
+    title: 'Tuna & Sweet Potato Cakes',
+    category: 'Lunch/Dinner',
+    prepTime: 40,
+    servings: 3,
+    calories: 850,
+    protein: 97,
+    carbs: 100,
+    fat: 16,
+    tags: ['Lunch/Dinner', 'High Protein', 'Meal Prep'],
+    image: 'https://images.unsplash.com/photo-1498837167922-ddd27525d352?w=600&auto=format&fit=crop&q=80',
+    ingredients: [
+      { name: 'Sweet Potato', amount: 250, unit: 'g', aisle: 'Produce', image: '' },
+      { name: 'Canned Tuna in Springwater (95g)', amount: 3, unit: 'pc', aisle: 'Pantry', image: '' },
+      { name: 'Eggs', amount: 2, unit: 'pc', aisle: 'Dairy & Eggs', image: '' },
+      { name: 'Corn Kernels', amount: 0.5, unit: 'cup', aisle: 'Produce', image: '' },
+      { name: 'Spring Onion', amount: 1, unit: 'pc', aisle: 'Produce', image: '' },
+      { name: 'Cauliflower', amount: 1, unit: 'pc', aisle: 'Produce', image: '' },
+      { name: 'Green Beans', amount: 100, unit: 'g', aisle: 'Produce', image: '' }
+    ],
+    instructions: [
+      'Peel and cube the sweet potato. Boil for 10-12 minutes (or microwave) until very soft. Drain well and mash, which should give about 1 cup.',
+      'Cool the mash for 10 minutes so it does not cook the eggs.',
+      'Drain the tuna thoroughly. Mix with the mash, eggs, corn, sliced spring onion, salt and pepper.',
+      'Shape into 6 patties. If the mixture is too wet, chill it for 15 minutes or add 1-2 tbsp oat flour or breadcrumbs.',
+      'Bake on a lined tray at 200°C for 20 minutes, flipping halfway, until golden. Or pan-fry on medium heat with oil spray, 3-4 minutes per side.',
+      'Toss the cauliflower florets and green beans with oil spray and salt. Roast on a second tray at 200°C for 20-25 minutes.',
+      'Cool completely, then portion 2 cakes plus veg per container. Best eaten within 2 days (3 at most).'
+    ]
+  },
+  {
+    id: 'mp4',
+    title: 'Chicken, Cauliflower & Veg Tray Bake',
+    category: 'Lunch/Dinner',
+    prepTime: 40,
+    servings: 3,
+    calories: 720,
+    protein: 85,
+    carbs: 78,
+    fat: 10,
+    tags: ['Lunch/Dinner', 'High Protein', 'Meal Prep'],
+    image: 'https://images.unsplash.com/photo-1498837167922-ddd27525d352?w=600&auto=format&fit=crop&q=80',
+    ingredients: [
+      { name: 'Chicken Breast', amount: 300, unit: 'g', aisle: 'Meat & Seafood', image: '' },
+      { name: 'Sweet Potato', amount: 200, unit: 'g', aisle: 'Produce', image: '' },
+      { name: 'Cauliflower', amount: 1, unit: 'pc', aisle: 'Produce', image: '' },
+      { name: 'Zucchini', amount: 2, unit: 'pc', aisle: 'Produce', image: '' },
+      { name: 'Green Beans', amount: 150, unit: 'g', aisle: 'Produce', image: '' },
+      { name: 'Lemon', amount: 1, unit: 'pc', aisle: 'Produce', image: '' },
+      { name: 'Garlic', amount: 2, unit: 'pc', aisle: 'Produce', image: '' },
+      { name: 'Dried Mixed Herbs', amount: 1, unit: 'tsp', aisle: 'Pantry', image: '' }
+    ],
+    instructions: [
+      'Heat the oven to 200°C (180°C fan) and line a large tray with baking paper.',
+      'Spread the sweet potato cubes (1.5cm) on the tray, spray with oil, and roast alone for 10 minutes since it takes longest.',
+      'Meanwhile, toss the chicken strips with the juice of half the lemon, crushed garlic, herbs, salt and pepper.',
+      'Add the cauliflower, zucchini, green beans and chicken to the tray, spreading everything out so it roasts rather than steams.',
+      'Roast 20-25 minutes, stirring once, until the chicken is cooked through (75°C, no pink) and the veg is golden.',
+      'Squeeze over the remaining lemon, cool, and divide into 3 containers. Keeps 3 days.'
+    ]
+  },
+  {
+    id: 'mp5',
+    title: 'Beef & Veg Stir-Fry with Buckwheat Noodles',
+    category: 'Lunch/Dinner',
+    prepTime: 25,
+    servings: 3,
+    calories: 750,
+    protein: 76,
+    carbs: 64,
+    fat: 24,
+    tags: ['Lunch/Dinner', 'High Protein', 'Meal Prep', 'Quick & Easy'],
+    image: 'https://images.unsplash.com/photo-1498837167922-ddd27525d352?w=600&auto=format&fit=crop&q=80',
+    ingredients: [
+      { name: 'Beef Strips', amount: 300, unit: 'g', aisle: 'Meat & Seafood', image: '' },
+      { name: 'Buckwheat Noodles (dry)', amount: 50, unit: 'g', aisle: 'Grains & Pasta', image: '' },
+      { name: 'Carrot', amount: 1, unit: 'pc', aisle: 'Produce', image: '' },
+      { name: 'Zucchini', amount: 1, unit: 'pc', aisle: 'Produce', image: '' },
+      { name: 'Green Beans', amount: 150, unit: 'g', aisle: 'Produce', image: '' },
+      { name: 'Soy Sauce', amount: 2, unit: 'tbsp', aisle: 'Pantry', image: '' },
+      { name: 'Fresh Ginger', amount: 1, unit: 'tsp', aisle: 'Produce', image: '' },
+      { name: 'Garlic', amount: 2, unit: 'pc', aisle: 'Produce', image: '' },
+      { name: 'Sesame Oil', amount: 1, unit: 'tsp', aisle: 'Pantry', image: '' }
+    ],
+    instructions: [
+      'Cook the noodles in boiling water as directed (usually 4-6 minutes). Rinse under cold water to stop the cooking and prevent sticking, then toss with the sesame oil.',
+      'Mix the soy sauce, ginger, garlic and 2 tbsp water in a small bowl.',
+      'Heat a wok or large pan until very hot. Add a little oil and cook the beef in two batches, 1-2 minutes each, until browned. Set aside on a plate. Crowding the pan makes the beef stew instead of sear.',
+      'In the same pan, stir-fry the sliced carrot for 2 minutes, then add the green beans and zucchini for 3 minutes more, until tender but still crisp.',
+      'Return the beef, pour in the sauce, and toss for 1 minute.',
+      'Cool, then pack the stir-fry and noodles in separate containers. Keeps 2-3 days.'
+    ]
+  },
+  {
+    id: 'mp6',
+    title: 'Grilled Chicken & Cauliflower Rice Bowls',
+    category: 'Lunch/Dinner',
+    prepTime: 35,
+    servings: 3,
+    calories: 745,
+    protein: 90,
+    carbs: 81,
+    fat: 10,
+    tags: ['Lunch/Dinner', 'High Protein', 'Meal Prep'],
+    image: 'https://images.unsplash.com/photo-1467003909585-2f8a72700288?w=600&auto=format&fit=crop&q=80',
+    ingredients: [
+      { name: 'Chicken Breast', amount: 300, unit: 'g', aisle: 'Meat & Seafood', image: '' },
+      { name: 'Cauliflower', amount: 600, unit: 'g', aisle: 'Produce', image: '' },
+      { name: 'Sweet Potato', amount: 200, unit: 'g', aisle: 'Produce', image: '' },
+      { name: 'Green Beans', amount: 150, unit: 'g', aisle: 'Produce', image: '' },
+      { name: 'Lemon', amount: 1, unit: 'pc', aisle: 'Produce', image: '' },
+      { name: 'Garlic', amount: 3, unit: 'pc', aisle: 'Produce', image: '' },
+      { name: 'Paprika', amount: 1, unit: 'tsp', aisle: 'Pantry', image: '' },
+      { name: 'Dried Oregano', amount: 1, unit: 'tsp', aisle: 'Pantry', image: '' },
+      { name: 'Light Greek Yoghurt', amount: 0.25, unit: 'cup', aisle: 'Dairy & Eggs', image: '' },
+      { name: 'Fresh Parsley', amount: 1, unit: 'tbsp', aisle: 'Produce', image: '' }
+    ],
+    instructions: [
+      'Heat the oven to 200°C (180°C fan) and line a tray with baking paper. Spread the cubed sweet potato on the tray, spray with oil, add a pinch of salt, and roast for 10 minutes.',
+      'Slice the chicken in half horizontally so it is evenly thin. Rub with 1 tbsp lemon juice, paprika, oregano, 2 crushed garlic cloves, salt, pepper and a little oil spray.',
+      'Add the green beans to the tray with the sweet potato and roast for another 15 minutes, until golden.',
+      'Cook the chicken in a hot pan or grill pan for 5-6 minutes per side, until the centre reaches 75°C or the juices run clear. Rest 5 minutes, then slice.',
+      'To make the cauliflower rice, cut the cauliflower into florets and pulse in a food processor until it looks like rice grains, or grate it on a box grater.',
+      'Cook the cauliflower rice in a large pan over medium-high heat with a little oil spray for 4-5 minutes, stirring often, until just tender. Do not overcook or it turns watery. Season with salt, pepper, a squeeze of lemon and the parsley.',
+      'Mix the yoghurt, 1 tbsp lemon juice, 1 small crushed garlic clove and a pinch of salt for the sauce.',
+      'Divide the cauliflower rice, chicken, sweet potato (about 1/3 cup per serve) and green beans into 3 containers. Keep the sauce separate.',
+      'Cool before sealing and refrigerating. Drain any liquid from the cauliflower rice before reheating until steaming hot, then drizzle with the sauce. Keeps 3 days.'
+    ]
   }
+
 ];
 
 const INITIAL_PLAN = {
