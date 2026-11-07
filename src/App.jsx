@@ -350,12 +350,23 @@ export default function App() {
   // Shared recipes come from the server; built-in starters stay local.
   const [sharedRecipes, setSharedRecipes] = useState(() => readLS('ppp_shared_cache', []));
   const [hiddenIds, setHiddenIds] = useState(() => readLS('ppp_hidden', []));
+  // Edits to recipes that aren't saved to the shared cookbook (works with no server, e.g. in a preview)
+  const [localEdits, setLocalEdits] = useState(() => readLS('ppp_local_edits', {}));
+  useEffect(() => {
+    try {
+      localStorage.setItem('ppp_local_edits', JSON.stringify(localEdits));
+    } catch {
+      /* storage unavailable: edits last until the page is closed */
+    }
+  }, [localEdits]);
 
   const recipes = useMemo(() => {
     const sharedIds = new Set(sharedRecipes.map((r) => r.id));
     const starters = INITIAL_RECIPES.filter((r) => !sharedIds.has(r.id));
-    return [...sharedRecipes, ...starters].filter((r) => !hiddenIds.includes(r.id));
-  }, [sharedRecipes, hiddenIds]);
+    return [...sharedRecipes, ...starters]
+      .map((r) => localEdits[r.id] || r)
+      .filter((r) => !hiddenIds.includes(r.id));
+  }, [sharedRecipes, hiddenIds, localEdits]);
 
   const isOwner = (id) => Boolean(getTokens()[id]);
 
@@ -437,12 +448,12 @@ export default function App() {
           /* try again next visit */
         }
       }
-      // One-time: save the built-in meal-prep recipes (ids starting "mp") as your own shared
-      // recipes, so you can edit them and upload photos. Until this succeeds, the built-in
-      // copies are shown as a fallback.
-      if (!localStorage.getItem('ppp_seeded_mp')) {
+      // One-time: save every built-in recipe as your own shared recipe, so all of them can be
+      // edited (including their photos). Until this succeeds, the built-in copies are shown
+      // as a fallback.
+      if (!localStorage.getItem('ppp_seeded_all')) {
         let failed = false;
-        for (const r of INITIAL_RECIPES.filter((x) => x.id.startsWith('mp'))) {
+        for (const r of INITIAL_RECIPES) {
           const token = newToken();
           try {
             await apiFetch('POST', r, token);
@@ -451,7 +462,7 @@ export default function App() {
             if (!/already exists/i.test(err.message)) failed = true;
           }
         }
-        if (!failed) localStorage.setItem('ppp_seeded_mp', '1');
+        if (!failed) localStorage.setItem('ppp_seeded_all', '1');
       }
       refreshShared();
     })();
@@ -580,6 +591,25 @@ export default function App() {
     setIsRecipeModalOpen(true);
   };
 
+  // Bring back recipes that were hidden or deleted. Built-in recipes are saved to the shared cookbook again.
+  const handleRestoreRecipes = async () => {
+    const toRestore = INITIAL_RECIPES.filter(
+      (r) => hiddenIds.includes(r.id) && !sharedRecipes.some((s) => s.id === r.id)
+    );
+    setHiddenIds([]);
+    for (const r of toRestore) {
+      const token = newToken();
+      try {
+        await apiFetch('POST', r, token);
+        saveToken(r.id, token);
+      } catch {
+        /* the built-in copy still shows even if saving fails */
+      }
+    }
+    await refreshShared();
+    showNotification('Deleted recipes restored');
+  };
+
   const handleDeleteRecipe = async (id) => {
     const token = getTokens()[id];
     if (!token) {
@@ -666,7 +696,7 @@ export default function App() {
 
     const sig = (list) =>
       JSON.stringify((list || []).map((i) => [i.name, String(i.amount), i.unit]));
-    const existing = editingRecipeId ? sharedRecipes.find((r) => r.id === editingRecipeId) : null;
+    const existing = editingRecipeId ? recipes.find((r) => r.id === editingRecipeId) : null;
     const macros =
       existing && existing.calories && sig(existing.ingredients) === sig(newRecipe.ingredients)
         ? { calories: existing.calories, protein: existing.protein, carbs: existing.carbs, fat: existing.fat }
@@ -692,7 +722,12 @@ export default function App() {
       setEditingRecipeId(null);
     };
 
-    if (editingRecipeId) {
+    if (editingRecipeId && !getTokens()[editingRecipeId]) {
+      // Not saved to the shared cookbook (no server, or someone else's recipe): keep the edit on this device
+      setLocalEdits((prev) => ({ ...prev, [editingRecipeId]: recipeData }));
+      closeModal();
+      showNotification(`Saved \"${recipeData.title}\" on this device`);
+    } else if (editingRecipeId) {
       const token = getTokens()[editingRecipeId];
       const previous = sharedRecipes;
       setSharedRecipes((prev) => prev.map((r) => (r.id === editingRecipeId ? recipeData : r)));
@@ -1057,9 +1092,6 @@ export default function App() {
                                         className="w-10 h-10 rounded-lg object-cover cursor-pointer hover:opacity-80 transition"
                                       />
                                       <div className="flex-1 min-w-0 space-y-1">
-                                        <div className="text-[11px] font-bold text-slate-800 leading-tight break-words">
-                                          {recipeMatch.title}
-                                        </div>
                                         <div className="flex flex-wrap items-center gap-x-2 text-[11px] font-bold text-slate-500">
                                           <span>🔥 {Math.round((recipeMatch.calories || 0) * ratio)} kcal</span>
                                           <span>💪 {Math.round((recipeMatch.protein || 0) * ratio)}g</span>
@@ -1130,6 +1162,14 @@ export default function App() {
                   onChange={(e) => setSearchQuery(e.target.value)}
                   className="bg-white border border-slate-200 text-xs px-3.5 py-2.5 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 w-full md:w-48"
                 />
+                {hiddenIds.length > 0 && (
+                  <button
+                    onClick={handleRestoreRecipes}
+                    className="bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 font-bold text-xs px-4 py-2.5 rounded-xl shadow-sm transition shrink-0"
+                  >
+                    Restore deleted ({hiddenIds.length})
+                  </button>
+                )}
                 <button
                   onClick={handleOpenAddRecipe}
                   className="bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs px-4 py-2.5 rounded-xl shadow-md transition flex items-center gap-2 shrink-0"
@@ -1145,18 +1185,16 @@ export default function App() {
                   <div className="relative h-48 bg-slate-100 cursor-pointer" onClick={() => setLightboxImage(recipe.image)}>
                     <img src={recipe.image} alt={recipe.title} className="w-full h-full object-cover" />
                     <div className="absolute top-3 right-3 flex items-center gap-1.5">
-                      {isOwner(recipe.id) && (
-                        <button
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            handleOpenEditRecipe(recipe);
-                          }}
-                          className="p-2 bg-white/90 hover:bg-emerald-600 hover:text-white text-slate-700 rounded-full transition shadow-md"
-                          title="Edit Recipe"
-                        >
-                          <Pencil className="w-4 h-4" />
-                        </button>
-                      )}
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleOpenEditRecipe(recipe);
+                        }}
+                        className="p-2 bg-white/90 hover:bg-emerald-600 hover:text-white text-slate-700 rounded-full transition shadow-md"
+                        title="Edit Recipe"
+                      >
+                        <Pencil className="w-4 h-4" />
+                      </button>
                       <button
                         onClick={(e) => {
                           e.stopPropagation();
